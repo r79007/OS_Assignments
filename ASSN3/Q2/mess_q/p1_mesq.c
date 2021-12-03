@@ -11,7 +11,7 @@
 
 #define PROJECT_PATHNAME "p1_mesq.c"
 #define PROJECT_ID 57
-#define MSG_SIZE 512
+#define MSG_SIZE 408
 
 struct msg_struct
 {
