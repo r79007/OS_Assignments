@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     char* buffer2[50];    
     for(int i=0;i<50;i++){               //Storing 50 random strings of length 4
-        buffer[i] = gen_random(4);
+        buffer2[i] = gen_random(4);
         //printf("%s\n", buffer[i]);
     }
 
