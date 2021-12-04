@@ -57,7 +57,7 @@ char *gen_random(size_t length)
 int main(int argc, char *argv[])
 {
 
-    char* buffer[50];    
+    char* buffer2[50];    
     for(int i=0;i<50;i++){               //Storing 50 random strings of length 4
         buffer[i] = gen_random(4);
         //printf("%s\n", buffer[i]);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 
         char* buf[50];
         for(int j=0;j<50;j++){               //Storing 50 random strings of length 4, along with indices
-            char* str = buffer[j];
+            char* str = buffer2[j];
             //printf("%s\n", buffer[i]);
             char buff[50];
             sprintf(buff,"%s %d",str,j);
