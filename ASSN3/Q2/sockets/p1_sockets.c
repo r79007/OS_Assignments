@@ -152,7 +152,6 @@ int main(int argc, char *argv[])
         }
 
         printf("Connection accepted from client\n");
-
         char* buf[50];
         for(int j=0;j<50;j++){               //Storing 50 random strings of length 4, along with indices
             char* str = buffer2[j];
@@ -166,7 +165,7 @@ int main(int argc, char *argv[])
             //string=buf[i];
             //printf("%d\n", atoi(&string[5]));
             //msgsnd(qid, (int *) &message.a[i], sizeof(message.a[i]), 0);
-            int nwrite=write(data_socket,&data2,strlen(data2));
+            int nwrite=write(data_socket,&data2,8);
             if(nwrite==-1){
                 perror("write");
                 exit(errno);

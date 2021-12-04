@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     int i;
     int ret;
     int data_socket;
-    char buffer[BUFFER_SIZE];
+    char buffer[10];
 
     /* Create data socket. */
 
@@ -48,17 +48,27 @@ int main(int argc, char *argv[])
         fprintf(stderr, "The server is down.\n");
         exit(EXIT_FAILURE);
     }
-    memset(buffer, 0, BUFFER_SIZE);
-
-    for(int i=0;i<50;i++){
-        int nread=read(data_socket,buffer,strlen(buffer));
+    
+    int k;
+    k=0;
+    for(;;){
+        memset(buffer, 0, BUFFER_SIZE);
+        int nread=read(data_socket,buffer,8);
         if(nread==-1){
             perror("read");
             exit(errno);
+        }else{
+            k++;
         }
 
-        printf("Data Received is : %s and id is %d\n", buffer,atoi(buffer[5]));
+        printf("Data Received is : %s and id is %s\n", buffer, buffer+5);
+
+        if(k==50){
+            break;
+        }
     }
+
+    close(data_socket);   
     
 
     return 0;
