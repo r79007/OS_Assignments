@@ -13,7 +13,7 @@
 
 #define SOCKET_NAME "/tmp/DemoSocket"
 #define BUFFER_SIZE 128
-char data[10];
+char data2[10];
 
 int rdrand16_step(uint16_t *rand)
 {
@@ -161,18 +161,18 @@ int main(int argc, char *argv[])
             sprintf(buff,"%s %d",str,j);
             buf[j]=buff;
             char* string=buf[j];
-            strcpy(data,buff);
+            strcpy(data2,buff);
             
             //string=buf[i];
             //printf("%d\n", atoi(&string[5]));
             //msgsnd(qid, (int *) &message.a[i], sizeof(message.a[i]), 0);
-            int nwrite=write(data_socket,&data,strlen(data));
+            int nwrite=write(data_socket,&data2,strlen(data2));
             if(nwrite==-1){
                 perror("write");
                 exit(errno);
             }
 
-            printf("Data sent is : %s\n", data);
+            printf("Data sent is : %s\n", data2);
             
 
         }
