@@ -9,8 +9,7 @@
 #define SOCKET_NAME "/tmp/DemoSocket"
 #define BUFFER_SIZE 128
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     struct sockaddr_un addr;
     int i;
@@ -22,7 +21,8 @@ main(int argc, char *argv[])
 
     data_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
-    if (data_socket == -1) {
+    if (data_socket == -1)
+    {
         perror("socket");
         exit(EXIT_FAILURE);
     }
@@ -40,44 +40,49 @@ main(int argc, char *argv[])
     addr.sun_family = AF_UNIX;
     strncpy(addr.sun_path, SOCKET_NAME, sizeof(addr.sun_path) - 1);
 
-    ret = connect (data_socket, (const struct sockaddr *) &addr,
-            sizeof(struct sockaddr_un));
+    ret = connect(data_socket, (const struct sockaddr *)&addr,
+                  sizeof(struct sockaddr_un));
 
-    if (ret == -1) {
+    if (ret == -1)
+    {
         fprintf(stderr, "The server is down.\n");
         exit(EXIT_FAILURE);
     }
 
     /* Send arguments. */
-    do{
+    do
+    {
         printf("Enter number to send to server :\n");
         scanf("%d", &i);
         ret = write(data_socket, &i, sizeof(int));
-        if (ret == -1) {
+        if (ret == -1)
+        {
             perror("write");
             break;
         }
-        printf("No of bytes sent = %d, data sent = %d\n", ret, i); 
-    } while(i);
+        printf("No of bytes sent = %d, data sent = %d\n", ret, i);
+    } while (i);
 
     /* Request result. */
-    
+
     memset(buffer, 0, BUFFER_SIZE);
-    strncpy (buffer, "RES", strlen("RES"));
+    strncpy(buffer, "RES", strlen("RES"));
     buffer[strlen(buffer)] = '\0';
     printf("buffer = %s\n", buffer);
 
     ret = write(data_socket, buffer, strlen(buffer));
-    if (ret == -1) {
+    if (ret == -1)
+    {
         perror("write");
         exit(EXIT_FAILURE);
     }
 
     /* Receive result. */
     memset(buffer, 0, BUFFER_SIZE);
-    
+
     ret = read(data_socket, buffer, BUFFER_SIZE);
-    if (ret == -1) {
+    if (ret == -1)
+    {
         perror("read");
         exit(EXIT_FAILURE);
     }

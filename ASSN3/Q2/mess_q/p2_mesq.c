@@ -41,6 +41,10 @@ int main()
     }
 
     struct msqid_ds buf;
+    //struct msg* str=buf.msg_last;
+    {
+        /* data */
+    };
     
     //char* last=buf->msg.msg_last;
     // * Receive messages while the queue is not empty
