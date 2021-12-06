@@ -9,7 +9,7 @@
 
 #define PROJECT_PATHNAME "P1_mesq.c"
 #define PROJECT_ID 57
-#define MSG_SIZE 512
+#define MSG_SIZE 408
 
 
 struct msg_struct
@@ -19,12 +19,12 @@ struct msg_struct
     char maxId[10];
 }message;
 
-// struct msg_struct
-// {
-//     long type;
-//     char msg[50][8];
-//     char maxId[10];
-// }message2;
+struct msg_struct2
+{
+    long type;
+    char msg[50][8];
+    char maxId[10];
+}message2;
 
 
 int main()
@@ -55,6 +55,7 @@ int main()
     };
     // * Receive messages while the queue is not empty
  for(;;){  
+     int i=0;
     do
     {
         if(msgrcv(qid, &message, sizeof(message),1,0)==-1)
@@ -62,10 +63,15 @@ int main()
             printf("Error recieving message!\n%s\n", strerror(errno));
             return -1;
         }else{
-            
-            sprintf(message.maxId,"%s",message.msg[k]+5);
-            printf("String Received is : %s and maxId is %s and id is %s\n", message.msg[k],message.maxId,message.msg[k]+5);
+            //printf("%lu",buf.msg_qnum);
+            sprintf(message2.maxId,"%s",message.msg[k]+5);
+            char rec[10];
+            strcpy(rec,message.msg[k]);
+            char* p;
+            p=strtok(rec," ");
+            printf("String Received is : %s and it's id is %s\n", p,message.msg[k]+5);
             k++;
+            i++;
         }
         //printf("%s(%ld) ", message.msg, message.type);
         
@@ -74,11 +80,14 @@ int main()
             printf("Error retrieving msgctl info!\n%s\n", strerror(errno));
             return -1;
         }
-    }while(buf.msg_qnum!=0);
+    }while(k<50 && i<5);
     //printf("\n");
-    
-    message.type=2;
-    msgsnd(qid,&message,sizeof(message),0);
+
+    i=0;
+    message2.type=2;
+    //printf("hi11\n");
+    msgsnd(qid,&message2,sizeof(message2),IPC_NOWAIT);
+    //printf("hi12\n");
     //message.type=1;
     if(k>=50){
         break;

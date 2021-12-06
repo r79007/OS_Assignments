@@ -20,6 +20,13 @@ struct msg_struct
     char maxId[10];
 }message;
 
+struct msg_struct2
+{
+    long type;
+    char msg[50][8];
+    char maxId[10];
+}message2;
+
 // struct msg_struct
 // {
 //     long type;
@@ -88,11 +95,13 @@ int main(){
     }
 
     message.type=1;
-
+    //struct msqid_ds buf2;
     char* buf[50];
     int strs=0;
         for(;;){
-            for(int j=0;j<5;j++){               //Storing 50 random strings of length 4, along with indices
+            //printf("hi\n");
+            for(int j=0;j<5;j++){    
+            //printf("hi\n");           //Storing 50 random strings of length 4, along with indices
             char* str = buffer[strs];
             //printf("%s\n", buffer[i]);
             char buff[50];
@@ -100,7 +109,9 @@ int main(){
             buf[strs]=buff;
             char* string=buf[strs];
             strcpy(message.msg[strs],buff);
-            msgsnd(qid,&message,sizeof(message),0);
+            //printf("hi1\n");
+            msgsnd(qid,&message,sizeof(message),IPC_NOWAIT);
+            //printf("%lu\n",buf2.msg_qnum);
             printf("Data sent is : %s\n", message.msg[strs]);
             
                 strs++;
@@ -109,13 +120,15 @@ int main(){
                 }
             }
 
-            struct msqid_ds buf2;
-        if(msgrcv(qid, &message, sizeof(message),2,0)==-1)
+        
+        if(msgrcv(qid, &message2, sizeof(message2),2,0)==-1)
         {
             printf("Error recieving message!\n%s\n", strerror(errno));
             return -1;
+        }else{
+            //printf("hi2\n");
         }
-            strs=atoi(message.maxId)+1;
+            strs=atoi(message2.maxId)+1;
             if(strs>=50){
                 break;
             }
