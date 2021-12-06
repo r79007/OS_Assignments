@@ -63,8 +63,11 @@ int main(int argc, char *argv[])
             k++;
             recieved++;
         }
-
-        printf("String recieved is : %s and it's id is %s\n", buffer, buffer+5);
+        char rec[10];
+        strcpy(rec,buffer);
+        char* p;
+        p=strtok(rec," ");
+        printf("String recieved is : %s and it's id is %s\n", p, buffer+5);
 
         
         // if(k==50){
