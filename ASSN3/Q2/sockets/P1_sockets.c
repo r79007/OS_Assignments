@@ -168,6 +168,7 @@ int main(int argc, char *argv[])
             //printf("%d\n", atoi(&string[5]));
             //msgsnd(qid, (int *) &message.a[i], sizeof(message.a[i]), 0);
             int nwrite=write(data_socket,&data2,8);
+            printf("Data sent is : %s\n", data2);
             if(nwrite==-1){
                 perror("write");
                 exit(errno);
@@ -178,7 +179,7 @@ int main(int argc, char *argv[])
                 }
             }
 
-            printf("Data sent is : %s\n", data2);
+            
             
         }
         //wait(1);

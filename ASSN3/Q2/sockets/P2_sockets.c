@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
             perror("read");
             exit(errno);
         }else{
-            k++;
+            k++; 
             recieved++;
         }
         char rec[10];
