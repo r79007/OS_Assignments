@@ -7,7 +7,7 @@
 #include <sys/msg.h>
 #include<errno.h>
 
-#define PROJECT_PATHNAME "p1_mesq.c"
+#define PROJECT_PATHNAME "P1_mesq.c"
 #define PROJECT_ID 57
 #define MSG_SIZE 512
 
@@ -18,6 +18,13 @@ struct msg_struct
     char msg[50][8];
     char maxId[10];
 }message;
+
+// struct msg_struct
+// {
+//     long type;
+//     char msg[50][8];
+//     char maxId[10];
+// }message2;
 
 
 int main()
@@ -46,8 +53,6 @@ int main()
     {
         /* data */
     };
-    
-    //char* last=buf->msg.msg_last;
     // * Receive messages while the queue is not empty
  for(;;){  
     do
@@ -57,8 +62,9 @@ int main()
             printf("Error recieving message!\n%s\n", strerror(errno));
             return -1;
         }else{
-            printf("String Received is : %s and maxId is %s and id is %s\n", message.msg[k],message.maxId,message.msg[k]+5);
+            
             sprintf(message.maxId,"%s",message.msg[k]+5);
+            printf("String Received is : %s and maxId is %s and id is %s\n", message.msg[k],message.maxId,message.msg[k]+5);
             k++;
         }
         //printf("%s(%ld) ", message.msg, message.type);

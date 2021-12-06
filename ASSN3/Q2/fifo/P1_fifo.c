@@ -1,31 +1,15 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
-#include<errno.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <errno.h>
+#include<time.h>
 #include <stdint.h>
-#include<fcntl.h>
 
-#define PROJECT_PATHNAME "P1_mesq.c"
-#define PROJECT_ID 57
-#define MSG_SIZE 408
-
-struct msg_struct
-{
-    long type;
-    char msg[50][8];
-    char maxId[10];
-}message;
-
-// struct msg_struct
-// {
-//     long type;
-//     char msg[50][8];
-//     char maxId[10];
-// }message2;
+char data2[10];
 
 int rdrand16_step (uint16_t *rand)
 {
@@ -62,65 +46,88 @@ if (length) {
 return randomString;
 }
 
-int main(){
-    
-    char* buffer[50];    
+int main(int argc, char* argv[]) {
+
+    int data_socket;
+
+    if (mkfifo("fifo1", 0777) == -1) {
+        if (errno != EEXIST) {
+            printf("Could not create fifo file\n");
+            return 1;
+        }
+    }
+
+    char* buffer2[50];    
     for(int i=0;i<50;i++){               //Storing 50 random strings of length 4
-        buffer[i] = gen_random(4);
+        buffer2[i] = gen_random(4);
         //printf("%s\n", buffer[i]);
     }
+    
 
 
-    // * Generate unique key to access the message queue
-    key_t key = ftok(PROJECT_PATHNAME, PROJECT_ID);
-    if(key==-1)
+
+for (;;)
     {
-        printf("Error generating msg key!\n%s\n", strerror(errno));
-        return -1;
+
+        /* Wait for incoming connection. */
+        data_socket=open("fifo1",O_WRONLY);
+        
+        if(data_socket==-1){
+        perror("open");
+        exit(errno);
     }
-
-    // * Create queue in kernel or get the id for an existing queue
-    int qid = msgget(key, 0666|IPC_CREAT);//? Why 0666?
-    if(qid==-1)
-    {
-        printf("Error retrieving queue id!\n%s\n", strerror(errno));
-        return -1;
-    }
-
-    message.type=1;
-
-    char* buf[50];
-    int strs=0;
-        for(;;){
+        char* buf[50];
+        int strs=0;
+        while(strs<50){
             for(int j=0;j<5;j++){               //Storing 50 random strings of length 4, along with indices
-            char* str = buffer[strs];
+            char* str = buffer2[strs];
             //printf("%s\n", buffer[i]);
             char buff[50];
             sprintf(buff,"%s %d",str,strs);
             buf[strs]=buff;
             char* string=buf[strs];
-            strcpy(message.msg[strs],buff);
-            msgsnd(qid,&message,sizeof(message),0);
-            printf("Data sent is : %s\n", message.msg[strs]);
+            strcpy(data2,buff);
             
+            //string=buf[i];
+            //printf("%d\n", atoi(&string[5]));
+            //msgsnd(qid, (int *) &message.a[i], sizeof(message.a[i]), 0);
+            int nwrite=write(data_socket,&data2,8);
+            printf("Data sent is : %s\n", data2);
+            if(nwrite==-1){
+                perror("write");
+                exit(errno);
+            }else{
                 strs++;
                 if(strs>=50){
                     break;
                 }
             }
 
-            struct msqid_ds buf2;
-        if(msgrcv(qid, &message, sizeof(message),2,0)==-1)
-        {
-            printf("Error recieving message!\n%s\n", strerror(errno));
-            return -1;
-        }
-            strs=atoi(message.maxId)+1;
-            if(strs>=50){
-                break;
-            }
             
-}
+            
+        }
         //wait(1);
+        int data_socket2=open("fifo2",O_RDONLY);
+        if(data_socket2==-1){
+            perror("open");
+            exit(errno);
+        }
+        char maxId[8];
+        int nread=read(data_socket2,maxId,8);
+        if(nread==-1){
+            perror("read");
+            exit(errno);
+        }
+        strs=atoi(maxId)+1;
+
+    }
+
+        break;
+}
+
+    close(data_socket);
+    
+
+
     return 0;
 }
