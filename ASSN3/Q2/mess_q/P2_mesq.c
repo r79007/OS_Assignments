@@ -49,7 +49,7 @@ int main()
     
     //char* last=buf->msg.msg_last;
     // * Receive messages while the queue is not empty
-    while(k<50){
+ for(;;){  
     do
     {
         if(msgrcv(qid, &message, sizeof(message),1,0)==-1)
@@ -71,10 +71,14 @@ int main()
     }while(buf.msg_qnum!=0);
     //printf("\n");
     
-    
+    message.type=2;
     msgsnd(qid,&message,sizeof(message),0);
+    //message.type=1;
+    if(k>=50){
+        break;
+    }
 
-}
+ }
     
     // for(int i=0; i<50; i++){
     //     msgrcv(qid, &message, sizeof(message),1,0);

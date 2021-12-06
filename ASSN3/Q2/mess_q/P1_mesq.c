@@ -84,7 +84,7 @@ int main(){
 
     char* buf[50];
     int strs=0;
-        for(;;){
+        while(strs<50){
             for(int j=0;j<5;j++){               //Storing 50 random strings of length 4, along with indices
             char* str = buffer[strs];
             //printf("%s\n", buffer[i]);
@@ -108,24 +108,12 @@ int main(){
 
             struct msqid_ds buf2;
     
-do
-    {
-        if(msgrcv(qid, &message, sizeof(message),1,0)==-1)
+
+        if(msgrcv(qid, &message, sizeof(message),2,0)==-1)
         {
             printf("Error recieving message!\n%s\n", strerror(errno));
             return -1;
         }
-        //printf("%s(%ld) ", message.msg, message.type);
-        
-        if(msgctl(qid, IPC_STAT, &buf2) == -1) // * check queue status
-        {
-            printf("Error retrieving msgctl info!\n%s\n", strerror(errno));
-            return -1;
-        }
-    }while(buf2.msg_qnum!=0);
-
-            
-            //int nread=read(data_socket,maxId,4);
             strs=atoi(message.maxId)+1;
             
 }
