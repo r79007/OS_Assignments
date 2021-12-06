@@ -173,6 +173,9 @@ int main(int argc, char *argv[])
                 exit(errno);
             }else{
                 strs++;
+                if(strs>=50){
+                    break;
+                }
             }
 
             printf("Data sent is : %s\n", data2);
