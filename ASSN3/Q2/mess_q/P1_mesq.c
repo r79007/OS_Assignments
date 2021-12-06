@@ -132,6 +132,7 @@ int main(){
             if(strs>=50){
                 break;
             }
+            printf("Highest ID recieved is %d\n", atoi(message2.maxId));
             
 }
         //wait(1);

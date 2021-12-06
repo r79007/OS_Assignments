@@ -119,7 +119,7 @@ for (;;)
             exit(errno);
         }
         strs=atoi(maxId)+1;
-
+        printf("Highest ID recieved is %d\n", atoi(maxId));
     }
 
         break;

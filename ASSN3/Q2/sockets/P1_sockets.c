@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
         char maxId[4];
         int nread=read(data_socket,maxId,4);
         strs=atoi(maxId)+1;
-
+        printf("Highest ID recieved is %d\n",atoi(maxId));
     }
 
         break;
