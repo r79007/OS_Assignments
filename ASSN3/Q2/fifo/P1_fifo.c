@@ -90,7 +90,7 @@ for (;;)
             
             //string=buf[i];
             //printf("%d\n", atoi(&string[5]));
-            //msgsnd(qid, (int *) &message.a[i], sizeof(message.a[i]), 0);
+        
             int nwrite=write(data_socket,&data2,8);
             printf("Data sent is : %s\n", data2);
             if(nwrite==-1){

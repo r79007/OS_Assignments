@@ -36,7 +36,6 @@ int main(int argc, char* argv[]) {
         for(int j=0;j<4;j++){
             str[j]=string[j];
         }
-        printf("recieved id: %d : %s\n",atoi(string[strlen(string)-1]),str);
     }
 
 */

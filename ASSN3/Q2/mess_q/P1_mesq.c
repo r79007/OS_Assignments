@@ -77,8 +77,6 @@ int main(){
         //printf("%s\n", buffer[i]);
     }
 
-
-    // * Generate unique key to access the message queue
     key_t key = ftok(PROJECT_PATHNAME, PROJECT_ID);
     if(key==-1)
     {
@@ -86,8 +84,7 @@ int main(){
         return -1;
     }
 
-    // * Create queue in kernel or get the id for an existing queue
-    int qid = msgget(key, 0666|IPC_CREAT);//? Why 0666?
+    int qid = msgget(key, 0666|IPC_CREAT);
     if(qid==-1)
     {
         printf("Error retrieving queue id!\n%s\n", strerror(errno));

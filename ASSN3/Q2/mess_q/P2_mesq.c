@@ -30,18 +30,14 @@ struct msg_struct2
 int main()
 {
     int k=0;
-    // * set up message queue
 
-    // * Generate unique key to access the message queue
     key_t key = ftok(PROJECT_PATHNAME, PROJECT_ID);
     if(key==-1)
     {
         printf("Error generating msg key!\n%s\n", strerror(errno));
         return -1;
     }
-
-    // * Create queue in kernel or get the id for an existing queue
-    int qid = msgget(key, 0666|IPC_CREAT);//? Why 0666?
+    int qid = msgget(key, 0666|IPC_CREAT);
     if(qid==-1)
     {
         printf("Error retrieving queue id!\n%s\n", strerror(errno));
@@ -49,11 +45,11 @@ int main()
     }
 
     struct msqid_ds buf;
-    //struct msg* str=buf.msg_last;
+    
     {
-        /* data */
+        
     };
-    // * Receive messages while the queue is not empty
+    
  for(;;){  
      int i=0;
     do
@@ -106,7 +102,7 @@ int main()
     //     //printf("Data Received is : %s\n", message.msg[i]);
     // }
 //28109
-    msgctl(qid, IPC_RMID, NULL); // * remove message queue
+    msgctl(qid, IPC_RMID, NULL);
 
     return 0;
 }

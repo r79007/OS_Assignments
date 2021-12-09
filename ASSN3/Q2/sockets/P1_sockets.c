@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <fcntl.h>
 
-#define SOCKET_NAME "/tmp/DemoSocket"
+#define SOCKET_NAME "/tmp/DemoSocket"   //
 #define BUFFER_SIZE 128
 char data2[10];
 
@@ -26,7 +26,7 @@ int rdrand16_step(uint16_t *rand)
 }
 
 char *gen_random(size_t length)
-{ // const size_t length, supra
+{ 
 
     static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
     char *randomString;
@@ -65,13 +65,6 @@ int main(int argc, char *argv[])
 
     struct sockaddr_un name;
 
-#if 0  
-    struct sockaddr_un {
-        sa_family_t sun_family;               /* AF_UNIX */
-        char        sun_path[108];            /* pathname */
-    };
-#endif
-
     int ret;
     int connection_socket;
     int data_socket;
@@ -79,68 +72,43 @@ int main(int argc, char *argv[])
     int data;
     char buffer[BUFFER_SIZE];
 
-    /*In case the program exited inadvertently on the last run,
-     *remove the socket.
-     **/
-
     unlink(SOCKET_NAME);
 
-    /* Create Master socket. */
-
-    /*SOCK_DGRAM for Datagram based communication*/
     connection_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (connection_socket == -1)
     {
         perror("socket");
-        exit(EXIT_FAILURE);
+        exit(errno);
     }
 
     printf("Master socket created\n");
 
-    /*initialize*/
     memset(&name, 0, sizeof(struct sockaddr_un));
-
-    /*Specify the socket Cridentials*/
+    
     name.sun_family = AF_UNIX;
     strncpy(name.sun_path, SOCKET_NAME, sizeof(name.sun_path) - 1);
 
-    /* Bind socket to socket name.*/
-    /* Purpose of bind() system call is that application() dictate the underlying 
-     * operating system the criteria of recieving the data. Here, bind() system call
-     * is telling the OS that if sender process sends the data destined to socket "/tmp/DemoSocket", 
-     * then such data needs to be delivered to this server process (the server process)*/
-    ret = bind(connection_socket, (const struct sockaddr *)&name,
-               sizeof(struct sockaddr_un));
+    ret = bind(connection_socket, (const struct sockaddr *)&name, sizeof(struct sockaddr_un));
 
     if (ret == -1)
     {
         perror("bind");
-        exit(EXIT_FAILURE);
+        exit(errno);
     }
 
     printf("bind() call succeed\n");
-    /*
-     * Prepare for accepting connections. The backlog size is set
-     * to 20. So while one request is being processed other requests
-     * can be waiting.
-     * */
 
     ret = listen(connection_socket, 20);
     if (ret == -1)
     {
         perror("listen");
-        exit(EXIT_FAILURE);
+        exit(errno);
     }
 
-    /* This is the main loop for handling connections. */
-    /*All Server process usually runs 24 x 7. Good Servers should always up
-     * and running and shold never go down. Have you ever seen Facebook Or Google
-     * page failed to load ??*/
     for (;;)
     {
 
-        /* Wait for incoming connection. */
         printf("Waiting on accept() sys call\n");
 
         data_socket = accept(connection_socket, NULL, NULL);
@@ -148,7 +116,7 @@ int main(int argc, char *argv[])
         if (data_socket == -1)
         {
             perror("accept");
-            exit(EXIT_FAILURE);
+            exit(errno);
         }
 
         printf("Connection accepted from client\n");
@@ -166,7 +134,6 @@ int main(int argc, char *argv[])
             
             //string=buf[i];
             //printf("%d\n", atoi(&string[5]));
-            //msgsnd(qid, (int *) &message.a[i], sizeof(message.a[i]), 0);
             int nwrite=write(data_socket,&data2,8);
             printf("Data sent is : %s\n", data2);
             if(nwrite==-1){
@@ -185,6 +152,10 @@ int main(int argc, char *argv[])
         //wait(1);
         char maxId[4];
         int nread=read(data_socket,maxId,4);
+        if(nread==-1){
+            perror("read");
+            exit(errno);
+        }
         strs=atoi(maxId)+1;
         printf("Highest ID recieved is %d\n",atoi(maxId));
     }
