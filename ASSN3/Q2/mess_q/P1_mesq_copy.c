@@ -125,11 +125,11 @@ int main(){
             //printf("hi2\n");
         }
             strs=atoi(message2.maxId)+1;
+            
+            printf("Highest ID recieved is %d\n", atoi(message2.maxId));
             if(strs>=50){
                 break;
             }
-            printf("Highest ID recieved is %d\n", atoi(message2.maxId));
-            
 }
         //wait(1);
     return 0;
