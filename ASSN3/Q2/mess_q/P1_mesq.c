@@ -44,37 +44,36 @@ int rdrand16_step (uint16_t *rand)
 	return (int) ok;
 }
 
-char *gen_random(size_t length) { // const size_t length, supra
+char *randomString(size_t length) { 
 
-static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
+static char characters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
 char *randomString;
 
-if (length) {
-    randomString = malloc(length +1); // sizeof(char) == 1, cf. C99
+if (length!=0) {
+    randomString = malloc(length +1); 
 
     if (randomString) {
-        int l = (int) (sizeof(charset) -1); // (static/global, could be const or #define SZ, would be even better)
-        int key;  // one-time instantiation (static/global would be even better)
-        for (int n = 0;n < length;n++) {
+        int sz = (int) (sizeof(characters) -1); 
+        int key; 
+        for (int i = 0;i < length;i++) {
             uint16_t rndnum;
             rdrand16_step(&rndnum);        
-            key = rndnum % l;   // no instantiation, just assignment, no overhead from sizeof
-            randomString[n] = charset[key];
+            key = rndnum % sz;   
+            randomString[i] = characters[key];
         }
 
         randomString[length] = '\0';
     }
 }
 
-return randomString;
+ return randomString;
 }
 
 int main(){
     
     char* buffer[50];    
     for(int i=0;i<50;i++){               //Storing 50 random strings of length 4
-        buffer[i] = gen_random(4);
-        //printf("%s\n", buffer[i]);
+        buffer[i] = randomString(4);
     }
 
     key_t key = ftok(PROJECT_PATHNAME, PROJECT_ID);

@@ -71,6 +71,11 @@ for (;;)
 
         
         data_socket=open("fifo1",O_WRONLY);
+        int data_socket2=open("fifo2",O_RDONLY);
+                if(data_socket2==-1){
+                    perror("open");
+                    exit(errno);
+                }
         
         if(data_socket==-1){
         perror("open");
@@ -93,6 +98,7 @@ for (;;)
         
             int nwrite=write(data_socket,&data2,8);
             printf("Data sent is : %s\n", data2);
+            
             if(nwrite==-1){
                 perror("write");
                 exit(errno);
@@ -101,25 +107,46 @@ for (;;)
                 if(strs>=50){
                     break;
                 }
+
+                if(j!=4){
+                char maxId[8];
+                int nread=read(data_socket2,maxId,8);
+                if(nread==-1){
+                    perror("read");
+                    exit(errno);
+                }
+                // strs=atoi(maxId)+1;
+                //printf("Highest ID recieved is %d\n", atoi(maxId));
+            }
+
             }
 
             
             
         }
-        //wait(1);
-        int data_socket2=open("fifo2",O_RDONLY);
-        if(data_socket2==-1){
-            perror("open");
-            exit(errno);
-        }
+
         char maxId[8];
-        int nread=read(data_socket2,maxId,8);
-        if(nread==-1){
-            perror("read");
-            exit(errno);
-        }
-        strs=atoi(maxId)+1;
-        printf("Highest ID recieved is %d\n", atoi(maxId));
+                int nread=read(data_socket2,maxId,8);
+                if(nread==-1){
+                    perror("read");
+                    exit(errno);
+                }
+                strs=atoi(maxId)+1;
+                printf("Highest ID recieved is %d\n", atoi(maxId));
+        //wait(1);
+        // int data_socket2=open("fifo2",O_RDONLY);
+        // if(data_socket2==-1){
+        //     perror("open");
+        //     exit(errno);
+        // }
+        // char maxId[8];
+        // int nread=read(data_socket2,maxId,8);
+        // if(nread==-1){
+        //     perror("read");
+        //     exit(errno);
+        // }
+        // strs=atoi(maxId)+1;
+        // printf("Highest ID recieved is %d\n", atoi(maxId));
     }
 
         break;

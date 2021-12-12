@@ -6,17 +6,15 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-#define SOCKET_NAME "/tmp/DemoSocket"  //
-#define BUFFER_SIZE 10
+#define SOCKET_NAME "Socket"  //
+
 
 int main(int argc, char *argv[])
 {
     struct sockaddr_un addr;
-    int i;
-    int ret;
-    int data_socket;
     char buffer[10];
-
+    
+    int data_socket;
     data_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (data_socket == -1)
@@ -29,12 +27,12 @@ int main(int argc, char *argv[])
 
     addr.sun_family = AF_UNIX;
     strncpy(addr.sun_path, SOCKET_NAME, sizeof(addr.sun_path) - 1);
-
+    int ret;
     ret = connect(data_socket, (const struct sockaddr *)&addr, sizeof(struct sockaddr_un));
    
     if (ret == -1)
     {
-        fprintf(stderr, "The server is down.\n");
+        perror("connect");
         exit(errno);
     }
     
@@ -43,7 +41,7 @@ int main(int argc, char *argv[])
     for(;;){
     int recieved=0;
     while(recieved<5 && k<50){    
-        memset(buffer, 0, BUFFER_SIZE);
+        memset(buffer, 0, 10);
         int nread=read(data_socket,buffer,8);
         if(nread==-1){
             perror("read");

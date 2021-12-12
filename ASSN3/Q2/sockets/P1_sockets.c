@@ -11,8 +11,8 @@
 #include <stdint.h>
 #include <fcntl.h>
 
-#define SOCKET_NAME "/tmp/DemoSocket"   //
-#define BUFFER_SIZE 128
+#define SOCKET_NAME "Socket"   //
+
 char data2[10];
 
 int rdrand16_step(uint16_t *rand)
@@ -25,33 +25,29 @@ int rdrand16_step(uint16_t *rand)
     return (int)ok;
 }
 
-char *gen_random(size_t length)
-{ 
+char *randomString(size_t length) { 
 
-    static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
-    char *randomString;
+static char characters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // could be const
+char *randomString;
 
-    if (length)
-    {
-        randomString = malloc(length + 1); // sizeof(char) == 1, cf. C99
+if (length!=0) {
+    randomString = malloc(length +1); 
 
-        if (randomString)
-        {
-            int l = (int)(sizeof(charset) - 1); // (static/global, could be const or #define SZ, would be even better)
-            int key;                            // one-time instantiation (static/global would be even better)
-            for (int n = 0; n < length; n++)
-            {
-                uint16_t rndnum;
-                rdrand16_step(&rndnum);
-                key = rndnum % l; // no instantiation, just assignment, no overhead from sizeof
-                randomString[n] = charset[key];
-            }
-
-            randomString[length] = '\0';
+    if (randomString) {
+        int sz = (int) (sizeof(characters) -1); 
+        int key; 
+        for (int i = 0;i < length;i++) {
+            uint16_t rndnum;
+            rdrand16_step(&rndnum);        
+            key = rndnum % sz;   
+            randomString[i] = characters[key];
         }
-    }
 
-    return randomString;
+        randomString[length] = '\0';
+    }
+}
+
+ return randomString;
 }
 
 int main(int argc, char *argv[])
@@ -59,21 +55,16 @@ int main(int argc, char *argv[])
 
     char* buffer2[50];    
     for(int i=0;i<50;i++){               //Storing 50 random strings of length 4
-        buffer2[i] = gen_random(4);
-        //printf("%s\n", buffer[i]);
+        buffer2[i] = randomString(4);
     }
 
     struct sockaddr_un name;
 
-    int ret;
-    int connection_socket;
-    int data_socket;
-    int result;
-    int data;
-    char buffer[BUFFER_SIZE];
+    
+    char buffer[128];
 
     unlink(SOCKET_NAME);
-
+    int connection_socket;
     connection_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (connection_socket == -1)
@@ -82,13 +73,11 @@ int main(int argc, char *argv[])
         exit(errno);
     }
 
-    printf("Master socket created\n");
-
     memset(&name, 0, sizeof(struct sockaddr_un));
     
     name.sun_family = AF_UNIX;
     strncpy(name.sun_path, SOCKET_NAME, sizeof(name.sun_path) - 1);
-
+    int ret;
     ret = bind(connection_socket, (const struct sockaddr *)&name, sizeof(struct sockaddr_un));
 
     if (ret == -1)
@@ -97,20 +86,16 @@ int main(int argc, char *argv[])
         exit(errno);
     }
 
-    printf("bind() call succeed\n");
-
     ret = listen(connection_socket, 20);
     if (ret == -1)
     {
         perror("listen");
         exit(errno);
     }
-
+    int data_socket;
     for (;;)
     {
-
-        printf("Waiting on accept() sys call\n");
-
+        
         data_socket = accept(connection_socket, NULL, NULL);
 
         if (data_socket == -1)
@@ -119,7 +104,6 @@ int main(int argc, char *argv[])
             exit(errno);
         }
 
-        printf("Connection accepted from client\n");
         char* buf[50];
         int strs=0;
         while(strs<50){
